@@ -33,7 +33,12 @@ public class HttpClient {
                         .callTimeout(30, TimeUnit.SECONDS)
                         .readTimeout(30, TimeUnit.SECONDS)
                         .writeTimeout(30, TimeUnit.SECONDS)
-                        .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                        .addInterceptor(new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+                            @Override
+                            public void log(String message) {
+                                logger.debug(message);
+                            }
+                        }).setLevel(HttpLoggingInterceptor.Level.BODY))
                         .build())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(JsonAndXmlConverterFactory.create(JsonConverterFactory.create(), JaxbConverterFactory.create()))

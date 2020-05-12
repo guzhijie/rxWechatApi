@@ -25,22 +25,12 @@ public class JsonConverterFactory extends Converter.Factory {
 
     @Override
     public Converter<ResponseBody, ?> responseBodyConverter(final Type type, Annotation[] annotations, Retrofit retrofit) {
-        return new Converter<ResponseBody, Object>() {
-            @Override
-            public Object convert(ResponseBody responseBody) throws IOException {
-                return JSONObject.parseObject(responseBody.string(), type);
-            }
-        };
+        return responseBody -> JSONObject.parseObject(responseBody.string(), type);
     }
 
     @Override
     public Converter<?, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations, Annotation[] methodAnnotations, Retrofit retrofit) {
-        return new Converter<Object, RequestBody>() {
-            @Override
-            public RequestBody convert(Object o) throws IOException {
-                return RequestBody.create(MEDIA_TYPE, JSONObject.toJSONString(o));
-            }
-        };
+        return o -> RequestBody.create(MEDIA_TYPE, JSONObject.toJSONString(o));
     }
 
     public static JsonConverterFactory create() {

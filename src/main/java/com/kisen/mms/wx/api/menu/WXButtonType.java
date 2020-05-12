@@ -14,4 +14,5 @@ public enum WXButtonType {
     click,
     text,
     view,
+    miniprogram,
 }
