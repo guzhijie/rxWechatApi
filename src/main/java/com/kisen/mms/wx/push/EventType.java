@@ -23,6 +23,7 @@ public enum EventType {
     naming_verify_fail,
     annual_renew,
     verify_expired,
+    MASSSENDJOBFINISH,
     ;
 
     public static class EventTypeAdapter extends XmlAdapter<String, EventType> {

@@ -1,10 +1,12 @@
 package com.kisen.mms.wx.push;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 
 /**
  * 描述:
@@ -21,59 +23,33 @@ public class EventPushInfo extends BasePushInfo {
     private Long MsgID;
     @XmlElement
     private String Status;
-    @XmlElement
-    private String EventKey;//扫描带参数二维码事件
-    @XmlElement
-    private String Ticket; //扫描带参数二维码事件
-    @XmlElement
-    private Float Latitude;//上报地理位置事件
-    @XmlElement
-    private Float Longitude;//上报地理位置事件
-    @XmlElement
-    private Float Precision;//上报地理位置事件
 
-    public Float getLatitude() {
-        return Latitude;
+    @XmlJavaTypeAdapter(EventPushExtraInfo.XMLAdapter.class)
+    @XmlElements(
+            {
+                    @XmlElement(name = "EventKey"),
+                    @XmlElement(name = "Ticket"),
+                    @XmlElement(name = "Latitude"),
+                    @XmlElement(name = "Longitude"),
+                    @XmlElement(name = "Precision"),
+                    @XmlElement(name = "FilterCount"),
+                    @XmlElement(name = "TotalCount"),
+                    @XmlElement(name = "SentCount"),
+                    @XmlElement(name = "ErrorCount"),
+                    @XmlElement(name = "CopyrightCheckResult", type = CopyrightCheckResult.class),
+                    @XmlElement(name = "ArticleUrlResult", type = ArticleUrlResult.class),
+
+            }
+    )
+    private EventPushExtraInfo eventPushExtraInfo;
+
+    public EventPushExtraInfo getEventPushExtraInfo() {
+        return eventPushExtraInfo;
     }
 
-    public EventPushInfo setLatitude(Float latitude) {
-        Latitude = latitude;
-        return this;
-    }
-
-    public Float getLongitude() {
-        return Longitude;
-    }
-
-    public EventPushInfo setLongitude(Float longitude) {
-        Longitude = longitude;
-        return this;
-    }
-
-    public Float getPrecision() {
-        return Precision;
-    }
-
-    public EventPushInfo setPrecision(Float precision) {
-        Precision = precision;
-        return this;
-    }
-
-    public String getTicket() {
-        return Ticket;
-    }
-
-    public EventPushInfo setTicket(String ticket) {
-        Ticket = ticket;
-        return this;
-    }
-
-    public String getEventKey() {
-        return EventKey;
-    }
-
-    public EventPushInfo setEventKey(String eventKey) {
-        EventKey = eventKey;
+    @XmlTransient
+    public EventPushInfo setEventPushExtraInfo(EventPushExtraInfo eventPushExtraInfo) {
+        this.eventPushExtraInfo = eventPushExtraInfo;
         return this;
     }
 
