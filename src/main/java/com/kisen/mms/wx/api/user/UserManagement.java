@@ -63,5 +63,16 @@ public interface UserManagement {
     Single<JSONObject> batch_get_user_info(@Query("access_token") String access_token,
                                            @Body Map<String, List<UserInfoQuery>> user_list);
 
-
+    /**
+     * 指定用户设置备注名<br>
+     * http请求方式: POST<br>
+     * https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=ACCESS_TOKEN
+     *
+     * @param access_token
+     * @param para
+     * @return
+     */
+    @POST("user/info/updateremark")
+    @JsonAndXmlConverterFactory.Json
+    Single<JSONObject> updateremark(@Query("access_token") String access_token, @Body Map<String, String> para);
 }

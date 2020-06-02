@@ -22,24 +22,20 @@ import com.kisen.mms.wx.api.user.UserListRet;
 import com.kisen.mms.wx.api.user.UserManagement;
 import com.kisen.mms.wx.api.webpage.WebpageManagement;
 import io.reactivex.*;
-import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.PublishSubject;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import org.apache.log4j.Logger;
-import org.reactivestreams.Publisher;
 
-import javax.security.auth.Subject;
 import java.io.File;
 import java.io.InputStream;
-import java.time.Duration;
-import java.time.LocalTime;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 描述:
@@ -153,6 +149,21 @@ public final class WXServerApiWrapper {
     }
 
     /*****************************************************************************************************************/
+
+    public Single<Boolean> updateremark(String openId, String remark) {
+        Map<String, String> map = new HashMap<>(2);
+        map.put("openId", openId);
+        map.put("remark", remark);
+        return checkAccessToken(token -> m_userManagement.updateremark(token, map), JSONObject.class)
+                .map(jsonObject -> "ok".equals(jsonObject.get("errmsg")));
+    }
+
+    public Single<JSONObject> getUserInfo(String openId) {
+        return checkAccessToken(token -> {
+            return m_userManagement.get_user_info(token, openId, "zh_CN");
+        }, JSONObject.class);
+    }
+
     public Single<JSONObject> getKfList() {
         return checkAccessToken(m_kfAccountManagement::getkflist, JSONObject.class);
     }
