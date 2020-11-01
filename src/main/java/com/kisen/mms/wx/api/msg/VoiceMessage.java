@@ -1,11 +1,16 @@
 package com.kisen.mms.wx.api.msg;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 描述:
  *
  * @author :jack.gu
  * @since : 2019/12/24
  */
+@Setter
+@Getter
 public class VoiceMessage extends Message<VoiceMessage> {
     private VoiceInfo voice;
 
@@ -13,26 +18,9 @@ public class VoiceMessage extends Message<VoiceMessage> {
         super(MsgType.voice);
     }
 
-    public VoiceInfo getVoice() {
-        return voice;
-    }
-
-    public VoiceMessage setVoice(VoiceInfo voice) {
-        this.voice = voice;
-        return this;
-    }
-
+    @Setter
+    @Getter
     public static class VoiceInfo {
         private String media_id;
-
-        public String getMedia_id() {
-            return media_id;
-        }
-
-        public VoiceInfo setMedia_id(String media_id) {
-            this.media_id = media_id;
-            return this;
-        }
     }
-
 }

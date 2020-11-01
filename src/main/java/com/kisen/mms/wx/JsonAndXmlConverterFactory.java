@@ -6,8 +6,13 @@ import retrofit2.Converter;
 import retrofit2.Retrofit;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 import java.lang.reflect.Type;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -31,8 +36,7 @@ public final class JsonAndXmlConverterFactory extends Converter.Factory {
         for (Annotation annotation : annotations) {
             if (annotation instanceof Json) {
                 return jsonFactory.responseBodyConverter(type, annotations, retrofit);
-            }
-            if (annotation instanceof Xml) {
+            } else if (annotation instanceof Xml) {
                 return xmlFactory.responseBodyConverter(type, annotations, retrofit);
             }
         }
@@ -44,12 +48,39 @@ public final class JsonAndXmlConverterFactory extends Converter.Factory {
         for (Annotation annotation : methodAnnotations) {
             if (annotation instanceof Json) {
                 return jsonFactory.requestBodyConverter(type, parameterAnnotations, methodAnnotations, retrofit);
-            }
-            if (annotation instanceof Xml) {
+            } else if (annotation instanceof Xml) {
                 return xmlFactory.requestBodyConverter(type, parameterAnnotations, methodAnnotations, retrofit);
             }
         }
         return null;
+    }
+
+    @Override
+    public Converter<?, String> stringConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
+        if (type == Date.class) {
+            return (Converter<Date, String>) value -> {
+                for (Annotation annotation : annotations) {
+                    if (annotation instanceof Format) {
+                        Format format = (Format) annotation;
+                        return new SimpleDateFormat(format.pattern()).format(value);
+                    }
+                }
+                return value.toString();
+            };
+        } else if (type == Number.class) {
+            return (Converter<Number, String>) value -> {
+                for (Annotation annotation : annotations) {
+                    if (annotation instanceof Format) {
+                        Format format = (Format) annotation;
+                        return new DecimalFormat(format.pattern()).format(value);
+                    }
+                }
+                return value.toString();
+            };
+        } else {
+            return super.stringConverter(type, annotations, retrofit);
+        }
+
     }
 
     public static JsonAndXmlConverterFactory create(Converter.Factory jsonFactory, Converter.Factory xmlFactory) {
@@ -57,10 +88,18 @@ public final class JsonAndXmlConverterFactory extends Converter.Factory {
     }
 
     @Retention(RUNTIME)
+    @Target(ElementType.METHOD)
     public @interface Json {
     }
 
     @Retention(RUNTIME)
+    @Target(ElementType.METHOD)
     public @interface Xml {
+    }
+
+    @Retention(RUNTIME)
+    @Target(ElementType.PARAMETER)
+    public @interface Format {
+        String pattern();
     }
 }

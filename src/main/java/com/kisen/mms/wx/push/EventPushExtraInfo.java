@@ -1,13 +1,13 @@
 package com.kisen.mms.wx.push;
 
 import com.sun.org.apache.xerces.internal.dom.ElementNSImpl;
-import com.sun.org.apache.xerces.internal.dom.ParentNode;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 描述:
@@ -15,6 +15,8 @@ import java.util.Map;
  * @author :jack.gu
  * @since : 2020/5/15
  */
+@Setter
+@Getter
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class EventPushExtraInfo {
     @XmlElement
@@ -36,111 +38,9 @@ public class EventPushExtraInfo {
     @XmlElement
     private Integer ErrorCount;
     @XmlElement(name = "CopyrightCheckResult")
-    private CopyrightCheckResult copyrightCheckResult ;
+    private CopyrightCheckResult copyrightCheckResult;
     @XmlElement(name = "ArticleUrlResult")
     private ArticleUrlResult articleUrlResult;
-
-    public String getEventKey() {
-        return EventKey;
-    }
-
-    public EventPushExtraInfo setEventKey(String eventKey) {
-        EventKey = eventKey;
-        return this;
-    }
-
-    public String getTicket() {
-        return Ticket;
-    }
-
-    public EventPushExtraInfo setTicket(String ticket) {
-        Ticket = ticket;
-        return this;
-    }
-
-    public Float getLatitude() {
-        return Latitude;
-    }
-
-    public EventPushExtraInfo setLatitude(Float latitude) {
-        Latitude = latitude;
-        return this;
-    }
-
-    public Float getLongitude() {
-        return Longitude;
-    }
-
-    public EventPushExtraInfo setLongitude(Float longitude) {
-        Longitude = longitude;
-        return this;
-    }
-
-    public Float getPrecision() {
-        return Precision;
-    }
-
-    public EventPushExtraInfo setPrecision(Float precision) {
-        Precision = precision;
-        return this;
-    }
-
-    public Integer getFilterCount() {
-        return FilterCount;
-    }
-
-    public EventPushExtraInfo setFilterCount(Integer filterCount) {
-        FilterCount = filterCount;
-        return this;
-    }
-
-    public Integer getTotalCount() {
-        return TotalCount;
-    }
-
-    public EventPushExtraInfo setTotalCount(Integer totalCount) {
-        TotalCount = totalCount;
-        return this;
-    }
-
-    public Integer getSentCount() {
-        return SentCount;
-    }
-
-    public EventPushExtraInfo setSentCount(Integer sentCount) {
-        SentCount = sentCount;
-        return this;
-    }
-
-    public Integer getErrorCount() {
-        return ErrorCount;
-    }
-
-    public EventPushExtraInfo setErrorCount(Integer errorCount) {
-        ErrorCount = errorCount;
-        return this;
-    }
-
-    public CopyrightCheckResult getCopyrightCheckResult() {
-        return copyrightCheckResult;
-    }
-
-    @XmlTransient
-    public EventPushExtraInfo setCopyrightCheckResult(CopyrightCheckResult copyrightCheckResult) {
-        this.copyrightCheckResult = copyrightCheckResult;
-        return this;
-    }
-
-    public ArticleUrlResult getArticleUrlResult() {
-        return articleUrlResult;
-    }
-
-    @XmlTransient
-    public EventPushExtraInfo setArticleUrlResult(ArticleUrlResult articleUrlResult) {
-        this.articleUrlResult = articleUrlResult;
-        return this;
-    }
-
 
     public static class XMLAdapter extends XmlAdapter<Object, EventPushExtraInfo> {
         private final EventPushExtraInfo m_extraInfo = new EventPushExtraInfo();

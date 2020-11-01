@@ -62,26 +62,26 @@ public final class WXServerApiWrapper {
     private volatile Long m_lastTokenGetTime;
 
     public WXServerApiWrapper(String appID, String appSecret) {
-        this.AppID = appID;
-        this.AppSecret = appSecret;
+        AppID = appID;
+        AppSecret = appSecret;
         HttpClient httpClient = HttpClient.getInstance(WXServerApi.WX_API_BASE_URL);
-        this.m_userManagement = httpClient.createApi(UserManagement.class);
-        this.m_messageManagement = httpClient.createApi(MessageManagement.class);
-        this.m_menuManagement = httpClient.createApi(MenuManagement.class);
-        this.m_accountManagement = httpClient.createApi(AccountManagement.class);
-        this.m_mediaManagement = httpClient.createApi(MediaManagement.class);
-        this.m_ai = httpClient.createApi(AI.class);
-        this.m_orc = httpClient.createApi(ORC.class);
-        this.m_webpageManagement = httpClient.createApi(WebpageManagement.class);
-        this.m_kfAccountManagement = httpClient.createApi(KFAccountManagement.class);
-        this.m_wxServerApi = httpClient.createApi(WXServerApi.class);
+        m_userManagement = httpClient.createApi(UserManagement.class);
+        m_messageManagement = httpClient.createApi(MessageManagement.class);
+        m_menuManagement = httpClient.createApi(MenuManagement.class);
+        m_accountManagement = httpClient.createApi(AccountManagement.class);
+        m_mediaManagement = httpClient.createApi(MediaManagement.class);
+        m_ai = httpClient.createApi(AI.class);
+        m_orc = httpClient.createApi(ORC.class);
+        m_webpageManagement = httpClient.createApi(WebpageManagement.class);
+        m_kfAccountManagement = httpClient.createApi(KFAccountManagement.class);
+        m_wxServerApi = httpClient.createApi(WXServerApi.class);
     }
 
     public static ObservableTransformer<ResponseBody, FileDownloadInfo> fileDownloadTransformer() {
         return observable -> observable.concatMap(responseBody -> {
-            final long total = responseBody.contentLength();
-            final InputStream inputStream = responseBody.byteStream();
-            final byte[] bytes = new byte[1024];
+            long total = responseBody.contentLength();
+            InputStream inputStream = responseBody.byteStream();
+            byte[] bytes = new byte[1024];
             return Observable.create((ObservableOnSubscribe<FileDownloadInfo>) emitter -> {
                 for (; ; ) {
                     int n = inputStream.read(bytes);
@@ -96,7 +96,7 @@ public final class WXServerApiWrapper {
         });
     }
 
-    public <D> SingleTransformer<JSONObject, D> toJavaObject(@NonNull final Class<D> clazz) {
+    public <D> SingleTransformer<JSONObject, D> toJavaObject(@NonNull Class<D> clazz) {
         return upstream -> upstream.subscribeOn(Schedulers.newThread())
                 .map(jsonObject -> {
                     logger.debug(jsonObject.toJSONString());
@@ -143,7 +143,7 @@ public final class WXServerApiWrapper {
                 .observeOn(Schedulers.trampoline());
     }
 
-    public <D> SingleTransformer<JSONObject, List<D>> toJavaList(@NonNull final Class<D> clazz) {
+    public <D> SingleTransformer<JSONObject, List<D>> toJavaList(@NonNull Class<D> clazz) {
         return upstream -> upstream.compose(toJavaObject(JSONArray.class))
                 .map((Function<JSONArray, List<D>>) jsonArray -> jsonArray.toJavaList(clazz));
     }
@@ -203,7 +203,7 @@ public final class WXServerApiWrapper {
                 WXResult.class);
     }
 
-    public Single<JSONObject> addTemplate(final String templateCode) {
+    public Single<JSONObject> addTemplate(String templateCode) {
         return checkAccessToken(s -> m_messageManagement.add_template(s, Collections.singletonMap("template_id_short", templateCode)),
                 JSONObject.class);
     }
@@ -214,7 +214,7 @@ public final class WXServerApiWrapper {
      * @param templateMessage
      * @return
      */
-    public Single<JSONObject> sendTemplateMessage(final TemplateMessage templateMessage) {
+    public Single<JSONObject> sendTemplateMessage(TemplateMessage templateMessage) {
         return checkAccessToken(s -> m_messageManagement.send_template_message(s, templateMessage), JSONObject.class);
     }
 
@@ -234,7 +234,7 @@ public final class WXServerApiWrapper {
      * @param next_openid
      * @return
      */
-    public Single<UserListRet> getUsers(final String next_openid) {
+    public Single<UserListRet> getUsers(String next_openid) {
         return checkAccessToken(s -> m_userManagement.get_users(s, next_openid), UserListRet.class);
     }
 
@@ -246,9 +246,11 @@ public final class WXServerApiWrapper {
      * @return
      */
     public Single<MessageRet> sendMessage(List<String> openids, String content) {
-        final TextMessage textMessage = new TextMessage()
-                .setTouser(openids)
-                .setText(new TextMessage.TextInfo().setContent(content));
+        TextMessage textMessage = new TextMessage();
+        textMessage.setTouser(openids);
+        TextMessage.TextInfo textInfo = new TextMessage.TextInfo();
+        textInfo.setContent(content);
+        textMessage.setText(textInfo);
         return checkAccessToken(s -> m_messageManagement.send_message(s, textMessage), MessageRet.class);
     }
 
@@ -260,7 +262,7 @@ public final class WXServerApiWrapper {
      * @return
      */
     public Single<WXResult> deleteMessage(Long msg_id, Long article_idx) {
-        final Map<String, Long> messageParma = new HashMap<>();
+        Map<String, Long> messageParma = new HashMap<>();
         messageParma.put("msg_id", msg_id);
         messageParma.put("article_idx", article_idx);
         return checkAccessToken(s -> m_messageManagement.delete_message(s, messageParma), WXResult.class);
@@ -272,7 +274,7 @@ public final class WXServerApiWrapper {
      * @param userInfoQueries
      * @return
      */
-    public Single<JSONArray> batchGetUserInfo(final List<UserInfoQuery> userInfoQueries) {
+    public Single<JSONArray> batchGetUserInfo(List<UserInfoQuery> userInfoQueries) {
         return checkAccessToken(s -> m_userManagement.batch_get_user_info(s, Collections.singletonMap("user_list", userInfoQueries)), JSONObject.class)
                 .map(jsonObject -> jsonObject.getJSONArray("user_info_list"));
     }
@@ -310,28 +312,36 @@ public final class WXServerApiWrapper {
      * @return
      */
     public Single<QRRet> createQrCode(String scene_str) {
-        final QRReq qrReq = new QRReq().setAction_name("QR_STR_SCENE")
-                .setAction_info(new ActionInfo(scene_str));
+        QRReq qrReq = QRReq.builder()
+                .action_name("QR_STR_SCENE")
+                .action_info(new ActionInfo(scene_str))
+                .build();
         return checkAccessToken(s -> m_accountManagement.create_qrcode(s, qrReq), QRRet.class);
     }
 
     public Single<QRRet> createQrCode(String scene_str, Long expire_seconds) {
-        final QRReq qrReq = new QRReq().setAction_name("QR_STR_SCENE")
-                .setExpire_seconds(expire_seconds)
-                .setAction_info(new ActionInfo(scene_str));
+        QRReq qrReq = QRReq.builder()
+                .action_name("QR_STR_SCENE")
+                .action_info(new ActionInfo(scene_str))
+                .expire_seconds(expire_seconds)
+                .build();
         return checkAccessToken(s -> m_accountManagement.create_qrcode(s, qrReq), QRRet.class);
     }
 
     public Single<QRRet> createQrCode(Long scene_id) {
-        final QRReq qrReq = new QRReq().setAction_name("QR_SCENE")
-                .setAction_info(new ActionInfo(scene_id));
+        QRReq qrReq = QRReq.builder()
+                .action_name("QR_SCENE")
+                .action_info(new ActionInfo(scene_id))
+                .build();
         return checkAccessToken(s -> m_accountManagement.create_qrcode(s, qrReq), QRRet.class);
     }
 
     public Single<QRRet> createQrCode(Long scene_id, Long expire_seconds) {
-        final QRReq qrReq = new QRReq().setAction_name("QR_SCENE")
-                .setExpire_seconds(expire_seconds)
-                .setAction_info(new ActionInfo(scene_id));
+        QRReq qrReq = QRReq.builder()
+                .action_name("QR_SCENE")
+                .expire_seconds(expire_seconds)
+                .action_info(new ActionInfo(scene_id))
+                .build();
         return checkAccessToken(s -> m_accountManagement.create_qrcode(s, qrReq), QRRet.class);
     }
 
@@ -341,7 +351,7 @@ public final class WXServerApiWrapper {
      * @param ticket
      * @return
      */
-    public Observable<FileDownloadInfo> showQrCode(final String ticket) {
+    public Observable<FileDownloadInfo> showQrCode(String ticket) {
         return checkAccessToken(s -> m_accountManagement.showqrcode(ticket));
     }
 
@@ -353,9 +363,9 @@ public final class WXServerApiWrapper {
      * @return
      * @see #downloadMedia(String)
      */
-    public Single<JSONObject> uploadMedia(final MediaType mediaType, File file) {
+    public Single<JSONObject> uploadMedia(MediaType mediaType, File file) {
         RequestBody requestBody = RequestBody.create(MultipartBody.FORM, file);
-        final MultipartBody.Part part = MultipartBody.Part.createFormData(mediaType.toString(), file.getName(), requestBody);
+        MultipartBody.Part part = MultipartBody.Part.createFormData(mediaType.toString(), file.getName(), requestBody);
         return checkAccessToken(s -> m_mediaManagement.upload_media(s, mediaType.toString(), part), JSONObject.class);
     }
 
@@ -366,7 +376,7 @@ public final class WXServerApiWrapper {
      * @return
      * @see #uploadMedia(MediaType, File)
      */
-    public Observable<FileDownloadInfo> downloadMedia(final String media_id) {
+    public Observable<FileDownloadInfo> downloadMedia(String media_id) {
         return checkAccessToken(s -> m_mediaManagement.get_media(s, media_id));
     }
 
@@ -378,7 +388,7 @@ public final class WXServerApiWrapper {
      */
     public Single<JSONObject> idcard(File file) {
         RequestBody requestBody = RequestBody.create(MultipartBody.FORM, file);
-        final MultipartBody.Part part = MultipartBody.Part.createFormData("img", file.getName(), requestBody);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("img", file.getName(), requestBody);
         return checkAccessToken(s -> m_orc.idcard(s, part), JSONObject.class);
     }
 
@@ -390,7 +400,7 @@ public final class WXServerApiWrapper {
      * @see #authorize(String, String)
      */
     public Single<JSONObject> oauth2(String code) {
-        return this.m_webpageManagement.oauth2(this.AppID, this.AppSecret, code, "authorization_code");
+        return m_webpageManagement.oauth2(AppID, AppSecret, code, "authorization_code");
     }
 
     /**
@@ -402,7 +412,7 @@ public final class WXServerApiWrapper {
      * @see #oauth2(String)
      */
     public Single<ResponseBody> authorize(String url, String STATE) {
-        return this.m_webpageManagement.authorize(AppID, url, "code", "SCOPE", STATE);
+        return m_webpageManagement.authorize(AppID, url, "code", "SCOPE", STATE);
     }
 
     private Single<String> checkAccessToken() {

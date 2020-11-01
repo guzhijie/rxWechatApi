@@ -1,11 +1,16 @@
 package com.kisen.mms.wx.api.msg;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 描述:
  *
  * @author :jack.gu
  * @since : 2019/12/24
  */
+@Setter
+@Getter
 public class TextMessage extends com.kisen.mms.wx.api.msg.Message<TextMessage> {
     private TextInfo text;
 
@@ -13,26 +18,9 @@ public class TextMessage extends com.kisen.mms.wx.api.msg.Message<TextMessage> {
         super(com.kisen.mms.wx.api.msg.MsgType.text);
     }
 
-    public TextInfo getText() {
-        return text;
-    }
-
-    public TextMessage setText(TextInfo text) {
-        this.text = text;
-        return this;
-    }
-
+    @Setter
+    @Getter
     public static class TextInfo {
         private String content;
-
-        public String getContent() {
-            return content;
-        }
-
-        public TextInfo setContent(String content) {
-            this.content = content;
-            return this;
-        }
     }
-
 }

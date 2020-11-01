@@ -1,5 +1,8 @@
 package com.kisen.mms.wx.api.msg;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +12,8 @@ import java.util.Map;
  * @author :jack.gu
  * @since : 2019/12/26
  */
+@Setter
+@Getter
 public class TemplateMessage {
     private final Map<String, ValueAndColor> data = new HashMap<>();
     private String touser;
@@ -20,28 +25,18 @@ public class TemplateMessage {
     private TemplateMessage() {
     }
 
-    public String getTouser() {
-        return touser;
+    @Setter
+    @Getter
+    public static class MiniProgram {
+        private String appid;
+        private String pagepath;
     }
 
-    public String getTemplate_id() {
-        return template_id;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public MiniProgram getMiniprogram() {
-        return miniprogram;
-    }
-
-    public Map<String, ValueAndColor> getData() {
-        return data;
-    }
-
-    public String getColor() {
-        return color;
+    @Setter
+    @Getter
+    public static class ValueAndColor {
+        private String value;
+        private String color;
     }
 
     public static class Builder {
@@ -73,12 +68,18 @@ public class TemplateMessage {
         }
 
         public Builder setFirst(String first) {
-            m_templateMessage.data.put("first", new ValueAndColor().setColor("#173177").setValue(first));
+            ValueAndColor valueAndColor = new ValueAndColor();
+            valueAndColor.setColor("#173177");
+            valueAndColor.setValue(first);
+            m_templateMessage.data.put("first", valueAndColor);
             return this;
         }
 
         public Builder setRemark(String remark) {
-            m_templateMessage.data.put("remark", new ValueAndColor().setColor("#173177").setValue(remark));
+            ValueAndColor valueAndColor = new ValueAndColor();
+            valueAndColor.setColor("#173177");
+            valueAndColor.setValue(remark);
+            m_templateMessage.data.put("remark", valueAndColor);
             return this;
         }
 
@@ -90,58 +91,17 @@ public class TemplateMessage {
         }
 
         public Builder setKeyValue(String key, String value) {
-            m_templateMessage.data.put(key, new ValueAndColor().setColor("#173177").setValue(value));
+            ValueAndColor valueAndColor = new ValueAndColor();
+            valueAndColor.setColor("#173177");
+            valueAndColor.setValue(value);
+            m_templateMessage.data.put(key, valueAndColor);
             return this;
         }
 
         public TemplateMessage build() {
-            return this.m_templateMessage;
+            return m_templateMessage;
         }
     }
 
-    public static class MiniProgram {
-        private String appid;
-        private String pagepath;
 
-        public String getAppid() {
-            return appid;
-        }
-
-        public MiniProgram setAppid(String appid) {
-            this.appid = appid;
-            return this;
-        }
-
-        public String getPagepath() {
-            return pagepath;
-        }
-
-        public MiniProgram setPagepath(String pagepath) {
-            this.pagepath = pagepath;
-            return this;
-        }
-    }
-
-    public static class ValueAndColor {
-        private String value;
-        private String color;
-
-        public String getValue() {
-            return value;
-        }
-
-        public ValueAndColor setValue(String value) {
-            this.value = value;
-            return this;
-        }
-
-        public String getColor() {
-            return color;
-        }
-
-        public ValueAndColor setColor(String color) {
-            this.color = color;
-            return this;
-        }
-    }
 }

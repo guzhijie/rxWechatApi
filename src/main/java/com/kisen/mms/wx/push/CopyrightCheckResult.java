@@ -1,5 +1,8 @@
 package com.kisen.mms.wx.push;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -12,6 +15,8 @@ import java.util.List;
  * @author :jack.gu
  * @since : 2020/5/14
  */
+@Setter
+@Getter
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class CopyrightCheckResult {
     @XmlElement
@@ -21,30 +26,4 @@ public class CopyrightCheckResult {
     @XmlElementWrapper
     private List<Item> ResultList;
 
-    public List<Item> getResultList() {
-        return ResultList;
-    }
-
-    public CopyrightCheckResult setResultList(List<Item> resultList) {
-        ResultList = resultList;
-        return this;
-    }
-
-    public Integer getCount() {
-        return Count;
-    }
-
-    public CopyrightCheckResult setCount(Integer count) {
-        Count = count;
-        return this;
-    }
-
-    public Integer getCheckState() {
-        return CheckState;
-    }
-
-    public CopyrightCheckResult setCheckState(Integer checkState) {
-        CheckState = checkState;
-        return this;
-    }
 }

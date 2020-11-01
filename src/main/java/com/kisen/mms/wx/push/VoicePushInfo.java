@@ -1,5 +1,8 @@
 package com.kisen.mms.wx.push;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -11,6 +14,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author :jack.gu
  * @since : 2020/3/27
  */
+@Setter
+@Getter
 @XmlRootElement(name = "xml")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class VoicePushInfo extends BasePushInfo {
@@ -22,40 +27,4 @@ public class VoicePushInfo extends BasePushInfo {
     private Long MsgId;
     @XmlElement
     private String Recognition;
-
-    public String getRecognition() {
-        return Recognition;
-    }
-
-    public VoicePushInfo setRecognition(String recognition) {
-        Recognition = recognition;
-        return this;
-    }
-
-    public String getFormat() {
-        return Format;
-    }
-
-    public VoicePushInfo setFormat(String format) {
-        Format = format;
-        return this;
-    }
-
-    public Long getMediaId() {
-        return MediaId;
-    }
-
-    public VoicePushInfo setMediaId(Long mediaId) {
-        MediaId = mediaId;
-        return this;
-    }
-
-    public Long getMsgId() {
-        return MsgId;
-    }
-
-    public VoicePushInfo setMsgId(Long msgId) {
-        MsgId = msgId;
-        return this;
-    }
 }

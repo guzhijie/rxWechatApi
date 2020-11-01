@@ -1,6 +1,7 @@
 package com.kisen.mms.wx.api;
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.Getter;
 
 /**
  * 描述:
@@ -8,6 +9,7 @@ import com.alibaba.fastjson.JSONObject;
  * @author :jack.gu
  * @since : 2019/12/24
  */
+@Getter
 public class WXResultException extends Exception {
     private final JSONObject result;
     private final int errcode;
@@ -16,19 +18,7 @@ public class WXResultException extends Exception {
     public WXResultException(JSONObject result) {
         super(result.toJSONString());
         this.result = result;
-        this.errcode = result.getIntValue("errcode");
-        this.errmsg = result.getString("errmsg");
-    }
-
-    public JSONObject getResult() {
-        return result;
-    }
-
-    public int getErrcode() {
-        return errcode;
-    }
-
-    public String getErrmsg() {
-        return errmsg;
+        errcode = result.getIntValue("errcode");
+        errmsg = result.getString("errmsg");
     }
 }

@@ -1,5 +1,8 @@
 package com.kisen.mms.wx.push;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -11,18 +14,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author :jack.gu
  * @since : 2020/3/27
  */
+@Setter
+@Getter
 @XmlRootElement(name = "xml")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class MusicPushInfo extends BasePushInfo {
     @XmlElement
     private MusicData Music;
-
-    public MusicData getMusic() {
-        return Music;
-    }
-
-    public MusicPushInfo setMusic(MusicData music) {
-        Music = music;
-        return this;
-    }
 }

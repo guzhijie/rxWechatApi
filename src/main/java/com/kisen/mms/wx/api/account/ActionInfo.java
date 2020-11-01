@@ -1,6 +1,8 @@
 package com.kisen.mms.wx.api.account;
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 描述:
@@ -8,6 +10,8 @@ import com.alibaba.fastjson.JSONObject;
  * @author :jack.gu
  * @since : 2019/12/30
  */
+@Setter
+@Getter
 public final class ActionInfo {
     private JSONObject scene;
 
@@ -15,21 +19,13 @@ public final class ActionInfo {
     }
 
     public ActionInfo(Long scene_id) {
-        this.scene = new JSONObject();
-        this.scene.put("scene_id", scene_id);
+        scene = new JSONObject();
+        scene.put("scene_id", scene_id);
     }
 
     public ActionInfo(String scene_str) {
-        this.scene = new JSONObject();
-        this.scene.put("scene_str", scene_str);
+        scene = new JSONObject();
+        scene.put("scene_str", scene_str);
     }
 
-    public JSONObject getScene() {
-        return scene;
-    }
-
-    public ActionInfo setScene(JSONObject scene) {
-        this.scene = scene;
-        return this;
-    }
 }
