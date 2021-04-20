@@ -23,6 +23,7 @@ import com.kisen.mms.wx.api.user.UserManagement;
 import com.kisen.mms.wx.api.webpage.WebpageManagement;
 import io.reactivex.*;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MultipartBody;
@@ -36,6 +37,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 描述:
@@ -57,7 +60,7 @@ public final class WXServerApiWrapper {
     private final WXServerApi m_wxServerApi;
     private final String AppID;
     private final String AppSecret;
-    private final Object m_gettingTokenLock = new Object();
+    private final Lock m_lock = new ReentrantLock();
     private volatile String m_accessToken;
     private volatile Long m_lastTokenGetTime;
 
@@ -77,77 +80,6 @@ public final class WXServerApiWrapper {
         m_wxServerApi = httpClient.createApi(WXServerApi.class);
     }
 
-    public static ObservableTransformer<ResponseBody, FileDownloadInfo> fileDownloadTransformer() {
-        return observable -> observable.concatMap(responseBody -> {
-            long total = responseBody.contentLength();
-            InputStream inputStream = responseBody.byteStream();
-            byte[] bytes = new byte[1024];
-            return Observable.create((ObservableOnSubscribe<FileDownloadInfo>) emitter -> {
-                for (; ; ) {
-                    int n = inputStream.read(bytes);
-                    if (n == -1) {
-                        emitter.onComplete();
-                        break;
-                    } else {
-                        emitter.onNext(new FileDownloadInfo(n, total, bytes));
-                    }
-                }
-            });
-        });
-    }
-
-    public <D> SingleTransformer<JSONObject, D> toJavaObject(@NonNull Class<D> clazz) {
-        return upstream -> upstream.subscribeOn(Schedulers.newThread())
-                .map(jsonObject -> {
-                    logger.debug(jsonObject.toJSONString());
-                    Integer errcode = jsonObject.getInteger("errcode");
-                    if (null != errcode && 0 != errcode) {
-                        switch (errcode) {
-                            case ErrCode.ACCESS_TOKEN_ILLEGAL:
-                                throw new TokenException(ErrCode.ACCESS_TOKEN_ILLEGAL);
-                            case ErrCode.ACCESS_TOKEN_TIMEOUT:
-                                throw new TokenException(ErrCode.ACCESS_TOKEN_TIMEOUT);
-                            default:
-                                throw new WXResultException(jsonObject);
-                        }
-                    } else {
-                        return JSONObject.toJavaObject(jsonObject, clazz);
-                    }
-                })
-                .retryWhen(throwableFlowable -> throwableFlowable.concatMap(throwable -> {
-                    if (throwable instanceof TokenException) {
-                        TokenException tokenException = (TokenException) throwable;
-                        if (tokenException.getErrcode() == ErrCode.ACCESS_TOKEN_ILLEGAL
-                                || tokenException.getErrcode() == ErrCode.ACCESS_TOKEN_TIMEOUT) {
-                            try {
-                                synchronized (m_gettingTokenLock) {
-                                    long now = System.currentTimeMillis();
-                                    /*如果未曾获得token，或者已经超时*/
-                                    if (m_lastTokenGetTime == null || (now - m_lastTokenGetTime) / 1000 > 7200) {
-                                        String token = getAccessToken().retry(3).blockingGet();
-                                        return Flowable.just(token);
-                                    } else {
-                                        return Flowable.just(m_accessToken);
-                                    }
-                                }
-                            } catch (RuntimeException e) {
-                                return Flowable.error(e);
-                            }
-                        } else {
-                            return Flowable.<AccessTokenRet>error(throwable);
-                        }
-                    } else {
-                        return Flowable.<AccessTokenRet>error(throwable);
-                    }
-                }))
-                .observeOn(Schedulers.trampoline());
-    }
-
-    public <D> SingleTransformer<JSONObject, List<D>> toJavaList(@NonNull Class<D> clazz) {
-        return upstream -> upstream.compose(toJavaObject(JSONArray.class))
-                .map((Function<JSONArray, List<D>>) jsonArray -> jsonArray.toJavaList(clazz));
-    }
-
     /*****************************************************************************************************************/
 
     public Single<Boolean> updateremark(String openId, String remark) {
@@ -159,9 +91,7 @@ public final class WXServerApiWrapper {
     }
 
     public Single<JSONObject> getUserInfo(String openId) {
-        return checkAccessToken(token -> {
-            return m_userManagement.get_user_info(token, openId, "zh_CN");
-        }, JSONObject.class);
+        return checkAccessToken(token -> m_userManagement.get_user_info(token, openId, "zh_CN"), JSONObject.class);
     }
 
     public Single<JSONObject> getKfList() {
@@ -204,8 +134,7 @@ public final class WXServerApiWrapper {
     }
 
     public Single<JSONObject> addTemplate(String templateCode) {
-        return checkAccessToken(s -> m_messageManagement.add_template(s, Collections.singletonMap("template_id_short", templateCode)),
-                JSONObject.class);
+        return checkAccessToken(s -> m_messageManagement.add_template(s, Collections.singletonMap("template_id_short", templateCode)), JSONObject.class);
     }
 
     /**
@@ -415,42 +344,88 @@ public final class WXServerApiWrapper {
         return m_webpageManagement.authorize(AppID, url, "code", "SCOPE", STATE);
     }
 
-    private Single<String> checkAccessToken() {
-        return Single.
-                <String>create(singleEmitter -> {
-                    if (null == m_accessToken) {
-                        synchronized (m_gettingTokenLock) {
-                            /*double check*/
-                            if (null == m_accessToken) {
-                                try {
-                                    String token = getAccessToken().blockingGet();
-                                    singleEmitter.onSuccess(token);
-                                } catch (RuntimeException e) {
-                                    Throwable throwable = e.getCause();
-                                    singleEmitter.onError(throwable != null ? throwable : e);
-                                }
-                            } else {
-                                singleEmitter.onSuccess(m_accessToken);
-                            }
+    /*****************************************************************************************************************/
+    private <D> SingleTransformer<JSONObject, D> toJavaObject(@NonNull Class<D> clazz) {
+        return upstream -> upstream.subscribeOn(Schedulers.newThread())
+                .map(jsonObject -> {
+                    logger.debug(jsonObject.toJSONString());
+                    Integer errcode = jsonObject.getInteger("errcode");
+                    if (null != errcode && 0 != errcode) {
+                        switch (errcode) {
+                            case ErrCode.ACCESS_TOKEN_ILLEGAL:
+                                throw new TokenException(ErrCode.ACCESS_TOKEN_ILLEGAL);
+                            case ErrCode.ACCESS_TOKEN_TIMEOUT:
+                                throw new TokenException(ErrCode.ACCESS_TOKEN_TIMEOUT);
+                            default:
+                                throw new WXResultException(jsonObject);
                         }
                     } else {
-                        singleEmitter.onSuccess(m_accessToken);
+                        return JSONObject.toJavaObject(jsonObject, clazz);
                     }
                 })
-                .retry(throwable -> throwable instanceof TokenException);
+                .retryWhen(throwableFlowable -> throwableFlowable.concatMap(throwable -> {
+                    if (throwable instanceof TokenException) {
+                        TokenException tokenException = (TokenException) throwable;
+                        int errcode = tokenException.getErrcode();
+                        if (ErrCode.ACCESS_TOKEN_ILLEGAL == errcode || ErrCode.ACCESS_TOKEN_TIMEOUT == errcode) {
+                            long now = System.currentTimeMillis();
+                            m_lock.lock();
+                            /*如果未曾获得token，或者已经超时*/
+                            if (m_lastTokenGetTime == null || (now - m_lastTokenGetTime) / 1000L > 7200L) {
+                                return getAccessToken().retry(3).toFlowable().observeOn(Schedulers.trampoline()).doFinally(m_lock::unlock);
+                            } else {
+                                return Flowable.just(m_accessToken).observeOn(Schedulers.trampoline()).doFinally(m_lock::unlock);
+                            }
+                        } else {
+                            return Flowable.<AccessTokenRet>error(throwable);
+                        }
+                    } else {
+                        return Flowable.<AccessTokenRet>error(throwable);
+                    }
+                }))
+                .observeOn(Schedulers.trampoline());
+    }
+
+    private Single<String> checkAccessToken() {
+        return Single.<String>create(singleEmitter -> {
+            if (null == m_accessToken) {
+                m_lock.lock();
+                if (null == m_accessToken) {
+                    Disposable d = getAccessToken().doFinally(m_lock::unlock)
+                            .subscribe(singleEmitter::onSuccess, singleEmitter::onError);
+                } else {
+                    m_lock.unlock();
+                    singleEmitter.onSuccess(m_accessToken);
+                }
+            } else {
+                singleEmitter.onSuccess(m_accessToken);
+            }
+        }).retry(throwable -> throwable instanceof TokenException);
     }
 
     private <T> Single<T> checkAccessToken(Function<String, SingleSource<? extends JSONObject>> signalFunction, Class<T> tClass) {
-        return checkAccessToken()
-                .flatMap(signalFunction)
-                .compose(toJavaObject(tClass));
+        return checkAccessToken().flatMap(signalFunction).compose(toJavaObject(tClass));
     }
 
     private Observable<FileDownloadInfo> checkAccessToken(Function<String, SingleSource<? extends ResponseBody>> signalFunction) {
         return checkAccessToken()
                 .flatMap(signalFunction)
-                .toObservable()
-                .compose(fileDownloadTransformer());
+                .flatMapObservable(responseBody -> {
+                    long total = responseBody.contentLength();
+                    InputStream inputStream = responseBody.byteStream();
+                    byte[] bytes = new byte[1024];
+                    return Observable.create(emitter -> {
+                        for (; ; ) {
+                            int n = inputStream.read(bytes);
+                            if (n == -1) {
+                                emitter.onComplete();
+                                break;
+                            } else {
+                                emitter.onNext(new FileDownloadInfo(n, total, bytes));
+                            }
+                        }
+                    });
+                });
     }
 
 }

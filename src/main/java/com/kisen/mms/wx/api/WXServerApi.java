@@ -38,7 +38,7 @@ public interface WXServerApi {
      * @param access_token
      * @return
      */
-    @POST("customservice/getkflist")
+    @GET("customservice/getkflist")
     @JsonAndXmlConverterFactory.Json
     Single<JSONObject> getkflist(@Query("access_token") String access_token);
 

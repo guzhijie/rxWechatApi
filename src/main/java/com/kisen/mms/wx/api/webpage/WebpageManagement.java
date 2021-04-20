@@ -28,7 +28,9 @@ public interface WebpageManagement {
      */
     @POST("/sns/oauth2/access_token")
     @JsonAndXmlConverterFactory.Json
-    Single<JSONObject> oauth2(@Query("appid") String appid, @Query("secret") String secret, @Query("code") String code, @Query("grant_type") String grant_type);
+    Single<JSONObject> oauth2(@Query("appid") String appid,
+                              @Query("secret") String secret, @Query("code") String code,
+                              @Query("grant_type") String grant_type);
 
     /**
      * 用户同意授权，获取code<br>

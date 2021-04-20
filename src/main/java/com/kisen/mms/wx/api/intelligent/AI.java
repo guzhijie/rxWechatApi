@@ -50,8 +50,8 @@ public interface AI {
      * http://api.weixin.qq.com/cgi-bin/media/voice/translatecontent?access_token=ACCESS_TOKEN&lfrom=xxx&lto=xxx
      *
      * @param access_token
-     * @param voice_id
-     * @param lang
+     * @param lfrom
+     * @param lto
      * @return
      */
     @POST("media/voice/translatecontent")

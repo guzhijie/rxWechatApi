@@ -28,7 +28,8 @@ public interface TagManagement {
      */
     @POST("tags/create")
     @JsonAndXmlConverterFactory.Json
-    Single<JSONObject> create_tag(@Query("access_token") String access_token, @Body Map<String, Object> tagInfo);
+    Single<JSONObject> create_tag(@Query("access_token") String access_token,
+                                  @Body Map<String, Object> tagInfo);
 
     /**
      * 获取公众号已创建的标签<br>
@@ -53,7 +54,8 @@ public interface TagManagement {
      */
     @POST("tags/update")
     @JsonAndXmlConverterFactory.Json
-    Single<JSONObject> update_tags(@Query("access_token") String access_token, @Body Map<String, Object> tagInfo);
+    Single<JSONObject> update_tags(@Query("access_token") String access_token,
+                                   @Body Map<String, Object> tagInfo);
 
     /**
      * 删除标签<br>
@@ -66,7 +68,8 @@ public interface TagManagement {
      */
     @POST("tags/delete")
     @JsonAndXmlConverterFactory.Json
-    Single<JSONObject> delete_tags(@Query("access_token") String access_token, @Body Map<String, Object> tagInfo);
+    Single<JSONObject> delete_tags(@Query("access_token") String access_token,
+                                   @Body Map<String, Object> tagInfo);
 
     /**
      * 获取标签下粉丝列表<br>
@@ -79,5 +82,6 @@ public interface TagManagement {
      */
     @POST("user_mgmt/tag/get")
     @JsonAndXmlConverterFactory.Json
-    Single<JSONObject> get_tag_users(@Query("access_token") String access_token, @Body Map<String, Object> tagInfo);
+    Single<JSONObject> get_tag_users(@Query("access_token") String access_token,
+                                     @Body Map<String, Object> tagInfo);
 }

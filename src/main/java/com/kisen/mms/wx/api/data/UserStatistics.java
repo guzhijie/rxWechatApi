@@ -19,7 +19,7 @@ public interface UserStatistics {
      * https://api.weixin.qq.com/datacube/getusersummary?access_token=ACCESS_TOKEN
      *
      * @param access_token
-     * @param body
+     * @param dateInfo
      * @return
      */
     @POST("datacube/getusersummary")
@@ -31,7 +31,7 @@ public interface UserStatistics {
      * https://api.weixin.qq.com/datacube/getusercumulate?access_token=ACCESS_TOKEN
      *
      * @param access_token
-     * @param body
+     * @param dateInfo
      * @return
      */
     @POST("datacube/getusercumulate")
