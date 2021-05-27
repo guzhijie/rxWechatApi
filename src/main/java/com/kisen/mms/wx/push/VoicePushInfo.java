@@ -19,12 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "xml")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class VoicePushInfo extends BasePushInfo {
-    @XmlElement
-    private String Format;
-    @XmlElement
-    private Long MediaId;
-    @XmlElement
-    private Long MsgId;
-    @XmlElement
-    private String Recognition;
+  @XmlElement private String Format;
+  @XmlElement private Long MediaId;
+  @XmlElement private Long MsgId;
+  @XmlElement private String Recognition;
 }

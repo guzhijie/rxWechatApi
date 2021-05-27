@@ -14,20 +14,21 @@ import java.lang.reflect.Type;
  * @author :jack.gu
  * @since : 2020/4/1
  */
-public class BooleanAdapter implements ObjectDeserializer , ObjectSerializer {
-    @SuppressWarnings("unchecked")
-    @Override
-    public Boolean deserialze(DefaultJSONParser parser, Type type, Object fieldName) {
-        Number n = parser.lexer.integerValue();
-        return (null == n) ? null : n.intValue() != 0;
-    }
+public class BooleanAdapter implements ObjectDeserializer, ObjectSerializer {
+  @SuppressWarnings("unchecked")
+  @Override
+  public Boolean deserialze(DefaultJSONParser parser, Type type, Object fieldName) {
+    Number n = parser.lexer.integerValue();
+    return (null == n) ? null : n.intValue() != 0;
+  }
 
-    @Override
-    public int getFastMatchToken() {
-        return 0;
-    }
+  @Override
+  public int getFastMatchToken() {
+    return 0;
+  }
 
-    @Override
-    public void write(JSONSerializer serializer, Object object, Object fieldName, Type fieldType, int features) throws IOException {
-    }
+  @Override
+  public void write(
+      JSONSerializer serializer, Object object, Object fieldName, Type fieldType, int features)
+      throws IOException {}
 }

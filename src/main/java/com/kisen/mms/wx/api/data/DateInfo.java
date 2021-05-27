@@ -15,8 +15,9 @@ import java.util.Date;
 @Setter
 @Getter
 public class DateInfo {
-    @JSONField(format = "yyyy-MM-dd")
-    private Date begin_date;
-    @JSONField(format = "yyyy-MM-dd")
-    private Date end_date;
+  @JSONField(format = "yyyy-MM-dd")
+  private Date begin_date;
+
+  @JSONField(format = "yyyy-MM-dd")
+  private Date end_date;
 }

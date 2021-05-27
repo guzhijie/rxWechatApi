@@ -14,11 +14,10 @@ import java.util.List;
 @Setter
 @Getter
 public abstract class Message<T extends Message<T>> {
-    private final MsgType msgtype;
-    private List<String> touser;
+  private final MsgType msgtype;
+  private List<String> touser;
 
-    protected Message(MsgType msgtype) {
-        this.msgtype = msgtype;
-    }
-
+  protected Message(MsgType msgtype) {
+    this.msgtype = msgtype;
+  }
 }

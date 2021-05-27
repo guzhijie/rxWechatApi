@@ -17,35 +17,31 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "xml")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class EventPushInfo extends BasePushInfo {
-    @XmlJavaTypeAdapter(EventType.EventTypeAdapter.class)
-    private EventType Event;
-    @XmlElement
-    private Long MsgID;
-    @XmlElement
-    private String Status;
+  @XmlJavaTypeAdapter(EventType.EventTypeAdapter.class)
+  private EventType Event;
 
-    @XmlJavaTypeAdapter(EventPushExtraInfo.XMLAdapter.class)
-    @XmlElements(
-            {
-                    @XmlElement(name = "EventKey"),
-                    @XmlElement(name = "Ticket"),
-                    @XmlElement(name = "Latitude"),
-                    @XmlElement(name = "Longitude"),
-                    @XmlElement(name = "Precision"),
-                    @XmlElement(name = "FilterCount"),
-                    @XmlElement(name = "TotalCount"),
-                    @XmlElement(name = "SentCount"),
-                    @XmlElement(name = "ErrorCount"),
-                    @XmlElement(name = "CopyrightCheckResult", type = CopyrightCheckResult.class),
-                    @XmlElement(name = "ArticleUrlResult", type = ArticleUrlResult.class),
+  @XmlElement private Long MsgID;
+  @XmlElement private String Status;
 
-            }
-    )
-    private EventPushExtraInfo eventPushExtraInfo;
+  @XmlJavaTypeAdapter(EventPushExtraInfo.XMLAdapter.class)
+  @XmlElements({
+    @XmlElement(name = "EventKey"),
+    @XmlElement(name = "Ticket"),
+    @XmlElement(name = "Latitude"),
+    @XmlElement(name = "Longitude"),
+    @XmlElement(name = "Precision"),
+    @XmlElement(name = "FilterCount"),
+    @XmlElement(name = "TotalCount"),
+    @XmlElement(name = "SentCount"),
+    @XmlElement(name = "ErrorCount"),
+    @XmlElement(name = "CopyrightCheckResult", type = CopyrightCheckResult.class),
+    @XmlElement(name = "ArticleUrlResult", type = ArticleUrlResult.class),
+  })
+  private EventPushExtraInfo eventPushExtraInfo;
 
-    @XmlTransient
-    public EventPushInfo setEventPushExtraInfo(EventPushExtraInfo eventPushExtraInfo) {
-        this.eventPushExtraInfo = eventPushExtraInfo;
-        return this;
-    }
+  @XmlTransient
+  public EventPushInfo setEventPushExtraInfo(EventPushExtraInfo eventPushExtraInfo) {
+    this.eventPushExtraInfo = eventPushExtraInfo;
+    return this;
+  }
 }

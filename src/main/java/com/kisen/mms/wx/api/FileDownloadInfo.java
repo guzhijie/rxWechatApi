@@ -12,13 +12,13 @@ import lombok.Setter;
 @Setter
 @Getter
 public class FileDownloadInfo {
-    public final int size;
-    public final long total;
-    public final byte[] data;
+  public final int size;
+  public final long total;
+  public final byte[] data;
 
-    public FileDownloadInfo(int size, long total, byte[] data) {
-        this.size = size;
-        this.total = total;
-        this.data = data;
-    }
+  public FileDownloadInfo(int size, long total, byte[] data) {
+    this.size = size;
+    this.total = total;
+    this.data = data;
+  }
 }

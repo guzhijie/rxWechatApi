@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class MessageRet {
-    private int errcode;
-    private String errmsg;
-    private long msg_id;
+  private int errcode;
+  private String errmsg;
+  private long msg_id;
 }

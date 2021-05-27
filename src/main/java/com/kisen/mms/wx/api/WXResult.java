@@ -12,6 +12,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class WXResult {
-    private int errcode;
-    private String errmsg;
+  private int errcode;
+  private String errmsg;
 }

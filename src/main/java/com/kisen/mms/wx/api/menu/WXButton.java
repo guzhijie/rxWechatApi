@@ -22,37 +22,39 @@ import java.util.List;
 @Setter
 @Getter
 public class WXButton {
-    public static class Adapter implements ObjectDeserializer, ObjectSerializer {
+  private WXButtonType type;
+  private String name;
+  private String value;
+  private String url;
+  private String key;
+  private String media_id;
+  private String pagepath; /*小程序相关*/
+  private String appid; /*小程序相关*/
 
-        @Override
-        public List<WXButton> deserialze(DefaultJSONParser parser, Type type, Object fieldName) {
-            JSONArray jsonArray = parser.parseObject().getJSONArray("list");
-            return jsonArray.toJavaList(WXButton.class);
-        }
+  @JSONField(name = "sub_button", deserializeUsing = Adapter.class, serializeUsing = Adapter.class)
+  private List<WXButton> children;
 
-        @Override
-        public int getFastMatchToken() {
-            return 0;
-        }
+  public static class Adapter implements ObjectDeserializer, ObjectSerializer {
 
-        @Override
-        public void write(JSONSerializer serializer, Object object, Object fieldName, Type fieldType, int features) throws IOException {
-            List<WXButton> list = (List<WXButton>) object;
-            if (list != null && !list.isEmpty()) {
-                serializer.write(object);
-            }
-
-        }
+    @Override
+    public List<WXButton> deserialze(DefaultJSONParser parser, Type type, Object fieldName) {
+      JSONArray jsonArray = parser.parseObject().getJSONArray("list");
+      return jsonArray.toJavaList(WXButton.class);
     }
 
-    private WXButtonType type;
-    private String name;
-    private String value;
-    private String url;
-    private String key;
-    private String media_id;
-    private String pagepath; /*小程序相关*/
-    private String appid;    /*小程序相关*/
-    @JSONField(name = "sub_button", deserializeUsing = Adapter.class, serializeUsing = Adapter.class)
-    private List<WXButton> children;
+    @Override
+    public int getFastMatchToken() {
+      return 0;
+    }
+
+    @Override
+    public void write(
+        JSONSerializer serializer, Object object, Object fieldName, Type fieldType, int features)
+        throws IOException {
+      List<WXButton> list = (List<WXButton>) object;
+      if (list != null && !list.isEmpty()) {
+        serializer.write(object);
+      }
+    }
+  }
 }

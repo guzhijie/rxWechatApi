@@ -17,5 +17,4 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Getter
 @XmlRootElement(name = "xml")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class NewsPushInfo extends BasePushInfo {
-}
+public class NewsPushInfo extends BasePushInfo {}

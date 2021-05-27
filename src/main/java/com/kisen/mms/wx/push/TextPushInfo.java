@@ -19,8 +19,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "xml")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class TextPushInfo extends BasePushInfo {
-    @XmlElement
-    private String Content;
-    @XmlElement
-    private Long MsgId;
+  @XmlElement private String Content;
+  @XmlElement private Long MsgId;
 }

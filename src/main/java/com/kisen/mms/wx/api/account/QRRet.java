@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public final class QRRet {
-    private String ticket;
-    private String url;
-    private long expire_seconds;
+  private String ticket;
+  private String url;
+  private long expire_seconds;
 }

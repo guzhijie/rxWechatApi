@@ -12,15 +12,15 @@ import lombok.Setter;
 @Setter
 @Getter
 public class TextMessage extends com.kisen.mms.wx.api.msg.Message<TextMessage> {
-    private TextInfo text;
+  private TextInfo text;
 
-    public TextMessage() {
-        super(com.kisen.mms.wx.api.msg.MsgType.text);
-    }
+  public TextMessage() {
+    super(com.kisen.mms.wx.api.msg.MsgType.text);
+  }
 
-    @Setter
-    @Getter
-    public static class TextInfo {
-        private String content;
-    }
+  @Setter
+  @Getter
+  public static class TextInfo {
+    private String content;
+  }
 }

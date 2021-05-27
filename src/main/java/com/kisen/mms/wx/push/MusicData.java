@@ -19,15 +19,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "Music")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class MusicData {
-    @XmlElement
-    private String Title;
-    @XmlElement
-    private String Description;
-    @XmlElement
-    private String MusicUrl;
-    @XmlElement
-    private String HQMusicUrl;
-    @XmlElement
-    private String ThumbMediaId;
-
+  @XmlElement private String Title;
+  @XmlElement private String Description;
+  @XmlElement private String MusicUrl;
+  @XmlElement private String HQMusicUrl;
+  @XmlElement private String ThumbMediaId;
 }

@@ -19,9 +19,9 @@ import java.util.List;
 @Getter
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class ArticleUrlResult {
-    @XmlElement
-    private Integer Count;
-    @XmlElementWrapper(name = "ResultList")
-    @XmlElement(name = "item")
-    private List<Item> ResultList;
+  @XmlElement private Integer Count;
+
+  @XmlElementWrapper(name = "ResultList")
+  @XmlElement(name = "item")
+  private List<Item> ResultList;
 }

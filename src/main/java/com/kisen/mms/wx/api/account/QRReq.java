@@ -14,8 +14,7 @@ import lombok.Setter;
 @Getter
 @Builder
 public final class QRReq {
-    private Long expire_seconds;
-    private String action_name;
-    private ActionInfo action_info;
-
+  private Long expire_seconds;
+  private String action_name;
+  private ActionInfo action_info;
 }

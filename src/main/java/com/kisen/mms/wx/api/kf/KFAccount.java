@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class KFAccount {
-    private String kf_account;
-    private String nickname;
-    private String password;
+  private String kf_account;
+  private String nickname;
+  private String password;
 }

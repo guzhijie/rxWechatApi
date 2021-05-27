@@ -1,6 +1,5 @@
 package com.kisen.mms.wx.push;
 
-
 import com.kisen.mms.wx.push.adapter.DateAdapter;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,18 +21,16 @@ import java.util.Date;
 @Getter
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public abstract class BasePushInfo {
-    @XmlRootElement(name = "xml")
-    @XmlAccessorType(XmlAccessType.PROPERTY)
-    public static class BasicInfo extends BasePushInfo {
+  @XmlElement private String ToUserName;
+  @XmlElement private String FromUserName;
 
-    }
+  @XmlJavaTypeAdapter(DateAdapter.class)
+  private Date CreateTime;
 
-    @XmlElement
-    private String ToUserName;
-    @XmlElement
-    private String FromUserName;
-    @XmlJavaTypeAdapter(DateAdapter.class)
-    private Date CreateTime;
-    @XmlJavaTypeAdapter(MSGType.MSGTypeAdapter.class)
-    private MSGType MsgType;
+  @XmlJavaTypeAdapter(MSGType.MSGTypeAdapter.class)
+  private MSGType MsgType;
+
+  @XmlRootElement(name = "xml")
+  @XmlAccessorType(XmlAccessType.PROPERTY)
+  public static class BasicInfo extends BasePushInfo {}
 }

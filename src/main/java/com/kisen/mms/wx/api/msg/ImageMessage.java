@@ -12,15 +12,15 @@ import lombok.Setter;
 @Setter
 @Getter
 public class ImageMessage extends com.kisen.mms.wx.api.msg.Message<ImageMessage> {
-    private ImageInfo image;
+  private ImageInfo image;
 
-    public ImageMessage() {
-        super(com.kisen.mms.wx.api.msg.MsgType.image);
-    }
+  public ImageMessage() {
+    super(com.kisen.mms.wx.api.msg.MsgType.image);
+  }
 
-    @Setter
-    @Getter
-    public static class ImageInfo {
-        private String media_id;
-    }
+  @Setter
+  @Getter
+  public static class ImageInfo {
+    private String media_id;
+  }
 }

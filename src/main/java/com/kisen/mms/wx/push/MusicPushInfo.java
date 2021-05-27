@@ -19,6 +19,5 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "xml")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class MusicPushInfo extends BasePushInfo {
-    @XmlElement
-    private MusicData Music;
+  @XmlElement private MusicData Music;
 }

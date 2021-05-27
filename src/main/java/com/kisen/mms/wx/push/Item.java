@@ -17,8 +17,6 @@ import javax.xml.bind.annotation.XmlElement;
 @Getter
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class Item {
-    @XmlElement
-    private int ArticleIdx;
-    @XmlElement
-    private String ArticleUrl;
+  @XmlElement private int ArticleIdx;
+  @XmlElement private String ArticleUrl;
 }

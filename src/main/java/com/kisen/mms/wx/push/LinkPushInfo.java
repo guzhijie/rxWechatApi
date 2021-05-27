@@ -19,12 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "xml")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class LinkPushInfo extends BasePushInfo {
-    @XmlElement
-    private String Title;
-    @XmlElement
-    private String Description;
-    @XmlElement
-    private String Url;
-    @XmlElement
-    private Long MsgId;
+  @XmlElement private String Title;
+  @XmlElement private String Description;
+  @XmlElement private String Url;
+  @XmlElement private Long MsgId;
 }

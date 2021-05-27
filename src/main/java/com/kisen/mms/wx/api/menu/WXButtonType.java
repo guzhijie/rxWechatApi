@@ -7,12 +7,12 @@ package com.kisen.mms.wx.api.menu;
  * @since : 2020/4/1
  */
 public enum WXButtonType {
-    //
-    img,
-    voice,
-    news,
-    click,
-    text,
-    view,
-    miniprogram,
+  //
+  img,
+  voice,
+  news,
+  click,
+  text,
+  view,
+  miniprogram,
 }

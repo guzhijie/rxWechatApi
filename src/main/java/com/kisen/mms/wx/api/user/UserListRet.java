@@ -14,14 +14,14 @@ import java.util.List;
 @Setter
 @Getter
 public class UserListRet {
-    private int total;
-    private int count;
-    private UserList data;
-    private String next_openid;
+  private int total;
+  private int count;
+  private UserList data;
+  private String next_openid;
 
-    @Setter
-    @Getter
-    public static class UserList {
-        private List<String> openid;
-    }
+  @Setter
+  @Getter
+  public static class UserList {
+    private List<String> openid;
+  }
 }

@@ -13,19 +13,17 @@ import lombok.Setter;
 @Setter
 @Getter
 public final class ActionInfo {
-    private JSONObject scene;
+  private JSONObject scene;
 
-    public ActionInfo() {
-    }
+  public ActionInfo() {}
 
-    public ActionInfo(Long scene_id) {
-        scene = new JSONObject();
-        scene.put("scene_id", scene_id);
-    }
+  public ActionInfo(Long scene_id) {
+    scene = new JSONObject();
+    scene.put("scene_id", scene_id);
+  }
 
-    public ActionInfo(String scene_str) {
-        scene = new JSONObject();
-        scene.put("scene_str", scene_str);
-    }
-
+  public ActionInfo(String scene_str) {
+    scene = new JSONObject();
+    scene.put("scene_str", scene_str);
+  }
 }

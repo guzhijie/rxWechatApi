@@ -12,15 +12,15 @@ import lombok.Setter;
 @Setter
 @Getter
 public class VoiceMessage extends Message<VoiceMessage> {
-    private VoiceInfo voice;
+  private VoiceInfo voice;
 
-    public VoiceMessage() {
-        super(MsgType.voice);
-    }
+  public VoiceMessage() {
+    super(MsgType.voice);
+  }
 
-    @Setter
-    @Getter
-    public static class VoiceInfo {
-        private String media_id;
-    }
+  @Setter
+  @Getter
+  public static class VoiceInfo {
+    private String media_id;
+  }
 }

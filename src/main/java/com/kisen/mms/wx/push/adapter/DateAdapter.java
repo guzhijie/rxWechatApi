@@ -10,13 +10,13 @@ import java.util.Date;
  * @since : 2020/3/27
  */
 public class DateAdapter extends XmlAdapter<Long, Date> {
-    @Override
-    public Date unmarshal(Long v) throws Exception {
-        return new Date(v * 1000);
-    }
+  @Override
+  public Date unmarshal(Long v) throws Exception {
+    return new Date(v * 1000);
+  }
 
-    @Override
-    public Long marshal(Date v) throws Exception {
-        return v.getTime();
-    }
+  @Override
+  public Long marshal(Date v) throws Exception {
+    return v.getTime();
+  }
 }

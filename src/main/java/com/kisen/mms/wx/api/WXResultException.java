@@ -11,14 +11,14 @@ import lombok.Getter;
  */
 @Getter
 public class WXResultException extends Exception {
-    private final JSONObject result;
-    private final int errcode;
-    private final String errmsg;
+  private final JSONObject result;
+  private final int errcode;
+  private final String errmsg;
 
-    public WXResultException(JSONObject result) {
-        super(result.toJSONString());
-        this.result = result;
-        errcode = result.getIntValue("errcode");
-        errmsg = result.getString("errmsg");
-    }
+  public WXResultException(JSONObject result) {
+    super(result.toJSONString());
+    this.result = result;
+    errcode = result.getIntValue("errcode");
+    errmsg = result.getString("errmsg");
+  }
 }

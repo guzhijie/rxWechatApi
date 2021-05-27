@@ -15,6 +15,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TokenException extends Exception {
 
-    private int errcode;
-
+  private int errcode;
 }

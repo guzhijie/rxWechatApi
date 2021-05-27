@@ -12,6 +12,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class AccessTokenRet {
-    private String access_token;
-    private int expires_in;
+  private String access_token;
+  private int expires_in;
 }

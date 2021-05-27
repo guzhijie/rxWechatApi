@@ -19,10 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "xml")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class ImagePushInfo extends BasePushInfo {
-    @XmlElement
-    private String PicUrl;
-    @XmlElement
-    private Long MediaId;
-    @XmlElement
-    private Long MsgId;
+  @XmlElement private String PicUrl;
+  @XmlElement private Long MediaId;
+  @XmlElement private Long MsgId;
 }

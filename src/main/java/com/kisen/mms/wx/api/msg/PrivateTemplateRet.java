@@ -12,11 +12,10 @@ import lombok.Setter;
 @Setter
 @Getter
 public class PrivateTemplateRet {
-    private String template_id;
-    private String title;
-    private String primary_industry;
-    private String deputy_industry;
-    private String content;
-    private String example;
-
+  private String template_id;
+  private String title;
+  private String primary_industry;
+  private String deputy_industry;
+  private String content;
+  private String example;
 }

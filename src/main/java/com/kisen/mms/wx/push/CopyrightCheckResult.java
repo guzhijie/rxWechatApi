@@ -19,11 +19,7 @@ import java.util.List;
 @Getter
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class CopyrightCheckResult {
-    @XmlElement
-    private Integer Count;
-    @XmlElement
-    private Integer CheckState;
-    @XmlElementWrapper
-    private List<Item> ResultList;
-
+  @XmlElement private Integer Count;
+  @XmlElement private Integer CheckState;
+  @XmlElementWrapper private List<Item> ResultList;
 }

@@ -9,9 +9,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * 描述:
- * <MsgType><![CDATA[shortvideo]]></MsgType>
- * <MsgType><![CDATA[video]]></MsgType>
+ * 描述: <MsgType><![CDATA[shortvideo]]></MsgType> <MsgType><![CDATA[video]]></MsgType>
  *
  * @author :jack.gu
  * @since : 2020/3/27
@@ -21,10 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "xml")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class VideoPushInfo extends BasePushInfo {
-    @XmlElement
-    private Long MediaId;
-    @XmlElement
-    private Long MsgId;
-    @XmlElement
-    private Long ThumbMediaId;
+  @XmlElement private Long MediaId;
+  @XmlElement private Long MsgId;
+  @XmlElement private Long ThumbMediaId;
 }

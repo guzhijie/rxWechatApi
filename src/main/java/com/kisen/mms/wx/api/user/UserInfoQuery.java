@@ -12,6 +12,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class UserInfoQuery {
-    private String openid;
-    private String lang;
+  private String openid;
+  private String lang;
 }

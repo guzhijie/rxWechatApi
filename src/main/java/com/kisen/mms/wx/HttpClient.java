@@ -18,30 +18,36 @@ import java.util.concurrent.TimeUnit;
  * @since : 2019/12/24
  */
 public class HttpClient {
-    private static final Logger logger = Logger.getLogger(HttpClient.class);
-    private static final Map<String, HttpClient> HTTP_CLIENT_MAP = new ConcurrentHashMap<>(8);
-    private final Retrofit m_retrofit;
+  private static final Logger logger = Logger.getLogger(HttpClient.class);
+  private static final Map<String, HttpClient> HTTP_CLIENT_MAP = new ConcurrentHashMap<>(8);
+  private final Retrofit m_retrofit;
 
-    private HttpClient(String baseUrl) {
-        m_retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .client(new OkHttpClient.Builder()
-                        .connectTimeout(30, TimeUnit.SECONDS)
-                        .callTimeout(30, TimeUnit.SECONDS)
-                        .readTimeout(30, TimeUnit.SECONDS)
-                        .writeTimeout(30, TimeUnit.SECONDS)
-                        .addInterceptor(new HttpLoggingInterceptor(logger::debug).setLevel(HttpLoggingInterceptor.Level.BODY))
-                        .build())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(JsonAndXmlConverterFactory.create(FastJsonConverterFactory.create(), JaxbConverterFactory.create()))
-                .build();
-    }
+  private HttpClient(String baseUrl) {
+    m_retrofit =
+        new Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .client(
+                new OkHttpClient.Builder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .callTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
+                    .addInterceptor(
+                        new HttpLoggingInterceptor(logger::debug)
+                            .setLevel(HttpLoggingInterceptor.Level.BODY))
+                    .build())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(
+                JsonAndXmlConverterFactory.create(
+                    FastJsonConverterFactory.create(), JaxbConverterFactory.create()))
+            .build();
+  }
 
-    public static HttpClient getInstance(String baseUrl) {
-        return HTTP_CLIENT_MAP.computeIfAbsent(baseUrl, HttpClient::new);
-    }
+  public static HttpClient getInstance(String baseUrl) {
+    return HTTP_CLIENT_MAP.computeIfAbsent(baseUrl, HttpClient::new);
+  }
 
-    public <I> I createApi(Class<I> clazz) {
-        return m_retrofit.create(clazz);
-    }
+  public <I> I createApi(Class<I> clazz) {
+    return m_retrofit.create(clazz);
+  }
 }
