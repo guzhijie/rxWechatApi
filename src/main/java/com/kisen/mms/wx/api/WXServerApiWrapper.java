@@ -23,7 +23,6 @@ import com.kisen.mms.wx.api.user.UserManagement;
 import com.kisen.mms.wx.api.webpage.WebpageManagement;
 import io.reactivex.*;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MultipartBody;
@@ -37,8 +36,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 描述:
@@ -60,7 +57,7 @@ public final class WXServerApiWrapper {
   private final WXServerApi m_wxServerApi;
   private final String AppID;
   private final String AppSecret;
-  private final Lock m_lock = new ReentrantLock();
+  private final Object lock = new Object();
   private volatile String m_accessToken;
   private volatile Long m_lastTokenGetTime;
 
@@ -397,20 +394,20 @@ public final class WXServerApiWrapper {
                             int errcode = tokenException.getErrcode();
                             if (ErrCode.ACCESS_TOKEN_ILLEGAL == errcode
                                 || ErrCode.ACCESS_TOKEN_TIMEOUT == errcode) {
-                              long now = System.currentTimeMillis();
-                              m_lock.lock();
-                              /*如果未曾获得token，或者已经超时*/
-                              if (m_lastTokenGetTime == null
-                                  || (now - m_lastTokenGetTime) / 1000L > 7200L) {
-                                return getAccessToken()
-                                    .retry(3)
-                                    .toFlowable()
-                                    .observeOn(Schedulers.trampoline())
-                                    .doFinally(m_lock::unlock);
-                              } else {
-                                return Flowable.just(m_accessToken)
-                                    .observeOn(Schedulers.trampoline())
-                                    .doFinally(m_lock::unlock);
+                              try {
+                                synchronized (lock) {
+                                  long now = System.currentTimeMillis();
+                                  /*如果未曾获得token，或者已经超时*/
+                                  if (m_lastTokenGetTime == null
+                                      || (now - m_lastTokenGetTime) / 1000 > 7200) {
+                                    String token = getAccessToken().retry(3).blockingGet();
+                                    return Flowable.just(token);
+                                  } else {
+                                    return Flowable.just(m_accessToken);
+                                  }
+                                }
+                              } catch (RuntimeException e) {
+                                return Flowable.error(e);
                               }
                             } else {
                               return Flowable.<AccessTokenRet>error(throwable);
@@ -426,15 +423,19 @@ public final class WXServerApiWrapper {
     return Single.<String>create(
             singleEmitter -> {
               if (null == m_accessToken) {
-                m_lock.lock();
-                if (null == m_accessToken) {
-                  Disposable d =
-                      getAccessToken()
-                          .doFinally(m_lock::unlock)
-                          .subscribe(singleEmitter::onSuccess, singleEmitter::onError);
-                } else {
-                  m_lock.unlock();
-                  singleEmitter.onSuccess(m_accessToken);
+                synchronized (lock) {
+                  /*double check*/
+                  if (null == m_accessToken) {
+                    try {
+                      String token = getAccessToken().blockingGet();
+                      singleEmitter.onSuccess(token);
+                    } catch (RuntimeException e) {
+                      Throwable throwable = e.getCause();
+                      singleEmitter.onError(throwable != null ? throwable : e);
+                    }
+                  } else {
+                    singleEmitter.onSuccess(m_accessToken);
+                  }
                 }
               } else {
                 singleEmitter.onSuccess(m_accessToken);
